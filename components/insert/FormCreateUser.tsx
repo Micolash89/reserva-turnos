@@ -1,10 +1,11 @@
-"use cliente";
+"use client";
 
 import { createUser, State } from "@/app/lib/actions";
 import { useActionState } from "react";
 
 function FormCreateUser() {
   const initialState: State = { message: null, errors: {} };
+  // const [state, formAction] = useActionState(createUser, initialState);
   const [state, formAction] = useActionState(createUser, initialState);
   //const [state, formAction] = useFormState(createUser, initialState);
 
@@ -26,7 +27,7 @@ function FormCreateUser() {
             name="nombre"
             id="nombre"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            required
+            // required
             aria-describedby="nombre-error"
           />
           <div id="nombre-error" aria-live="polite" aria-atomic="true">
@@ -50,7 +51,7 @@ function FormCreateUser() {
             name="email"
             id="email"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            required
+            // required
             aria-describedby="email-error"
           />
           <div id="email-error" aria-live="polite" aria-atomic="true">
@@ -76,7 +77,7 @@ function FormCreateUser() {
             name="contrasena"
             id="contrasena"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            required
+            // required
             aria-describedby="contrasena-error"
           />
           <div id="contrasena-error" aria-live="polite" aria-atomic="true">
@@ -99,7 +100,7 @@ function FormCreateUser() {
             name="rol"
             id="rol"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            required
+            // required
             aria-describedby="rol-error"
           >
             <option value="USUARIO">Cliente</option>
