@@ -1,14 +1,8 @@
-"use client";
-import { createUser } from "../lib/actions";
+
+import FormCreateUser from "@/components/insert/FormCreateUser";
 
 function page() {
-  return (
-    <>
-      <form action={createUser}>
-        <button type="submit">enviar</button>
-      </form>
-    </>
-  );
+  return <FormCreateUser />;
 }
 
 export default page;
