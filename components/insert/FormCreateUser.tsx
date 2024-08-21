@@ -103,7 +103,7 @@ function FormCreateUser() {
             // required
             aria-describedby="rol-error"
           >
-            <option value="USUARIO">Cliente</option>
+            <option value="USUARIO">Usuario</option>
             <option value="ADMINISTRADOR">Administrador</option>
           </select>
           <div id="rol-error" aria-live="polite" aria-atomic="true">

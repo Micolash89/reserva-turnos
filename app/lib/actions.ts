@@ -11,6 +11,7 @@ const FormSchema = z.object({
   nombre: z.string({
     invalid_type_error: "error en el nombre",
   }),
+
   email: z
     .string({
       invalid_type_error: "error en el mail",
@@ -24,6 +25,7 @@ const FormSchema = z.object({
   rol: z.enum(["USUARIO", "ADMINISTRADOR"], {
     invalid_type_error: "seleccione un rol",
   }),
+
   estado: z.string(),
 });
 
@@ -58,13 +60,17 @@ export async function createUser(prevState: State, formData: FormData) {
   let sql;
   try {
     sql = await pool.connect();
-    await sql.query(
+    const result = await sql.query(
       `INSERT INTO usuario (nombre, email, contrasena, rol, estado) 
-            VALUES (?, ?, ?, ?, true)`,
-      [nombre, email, contrasena, rol]
+            VALUES (${nombre}, ${email}, ${contrasena}, ${rol}, true)`
     );
+
+    console.log(result);
   } catch (error) {
     console.error("Error en la base de datos", error);
+    return {
+      message: "Error en los campos para crear un usuario",
+    };
   } finally {
     if (sql) sql.release();
   }
