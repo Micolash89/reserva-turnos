@@ -1,5 +1,4 @@
-
-import FormCreateUser from "@/components/insert/FormCreateUser";
+import FormCreateUser from "@/components/create/user/FormCreateUser";
 
 function page() {
   return <FormCreateUser />;
