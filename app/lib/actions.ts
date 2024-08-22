@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import pool from "./db";
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import { jwtVerify, SignJWT } from "jose";
+import { cookies } from "next/headers";
 
 const FormSchema = z.object({
   nombre: z.string({
@@ -139,10 +141,9 @@ export async function createBusiness(
 
   const { direccion, telefono, id_usuario, horario_apertura, horario_cierre } =
     validatedFields.data;
-  let sql;
+  let sql = await pool.connect();
 
   try {
-    sql = await pool.connect();
     await sql.query(
       `INSERT INTO negocio (direccion, telefono, id_usuario, horario_apertura, horario_cierre)
       VALUES ($1, $2, $3, $4, $5)`,
@@ -153,8 +154,62 @@ export async function createBusiness(
     return {
       message: "Error en los campos para crear un negocio",
     };
+  } finally {
+    sql.release();
   }
 
   revalidatePath("/business");
   redirect("/business");
+}
+
+export async function handleSubmitLogin(formData: FormData) {
+  const email = formData.get("email");
+  const password = formData.get("password");
+  let sql;
+
+  try {
+    sql = await pool.connect();
+    const result = await sql.query(
+      `SELECT * FROM usuario u WHERE u.email = $1 AND u.contrasena = $2`,
+      [email, password]
+    );
+
+    const userData = result.rows[0];
+
+    const enc: Uint8Array = new TextEncoder().encode(
+      process.env.SECRET_JWT_TOKEN
+    );
+
+    const token = await new SignJWT({
+      id: userData.id,
+      nombre: userData.nombre,
+      email: userData.email,
+      rol: userData.rol,
+      estado: userData.estado,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime(`${60 * 60 * 24 * 7}s`)
+      .sign(enc);
+
+    //const { payload } = await jwtVerify(token, enc);
+
+    cookies().set({
+      name: "token",
+      value: token.toString(),
+      maxAge: 100000,
+      httpOnly: true,
+      secure: true,
+      path: "/",
+      sameSite: "strict",
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    if (sql) sql.release();
+  }
+
+  /*redireccionar al home*/
+  revalidatePath("/");
+  redirect("/");
 }
